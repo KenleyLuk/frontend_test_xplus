@@ -1,0 +1,151 @@
+import 'package:flutter/material.dart';
+import '../../../../core/utils/responsive.dart';
+import 'token_input_section.dart';
+import '../../data/datasources/assets_data_source.dart';
+import '../../domain/entities/token.dart';
+import 'token_selector_modal.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../presentation/cubit/swap_cubit.dart';
+import '../../presentation/cubit/swap_state.dart';
+
+class SwapCard extends StatelessWidget {
+  const SwapCard({Key? key}) : super(key: key);
+
+  void _showTokenSelector(
+    BuildContext context, {
+    required bool isFromToken,
+    Token? currentToken,
+  }) async {
+   
+    final cubit = context.read<SwapCubit>();
+
+    final dataSource = AssetsDataSourceImpl();
+    final tokens = await dataSource.getTokens();
+
+    // 過濾當前已選擇的 token
+    final availableTokens = tokens.where((token) {
+      return token.symbol != currentToken?.symbol;
+    }).toList();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (modalContext) => TokenSelectorModal(
+        tokens: availableTokens,
+        onTokenSelected: (token) {
+          // 使用保存的 cubit
+          if (isFromToken) {
+            cubit.selectFromToken(token);
+          } else {
+            cubit.selectToToken(token);
+          }
+        },
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SwapCubit, SwapState>(
+      builder: (context, state) {
+        return Card(
+          color: const Color(0xFF0F1011),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: const BorderSide(color: Color(0xFF616363), width: 1),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(Responsive.getCardPadding(context)),
+            child: Column(
+              children: [
+                TokenInputSection(
+                  label: 'From',
+                  tokenSymbol: state.fromToken?.symbol,
+                  balance: state.fromToken?.balance ?? 0.0,
+                  amount: state.fromAmount,
+                  showMaxButton: state.fromToken != null,
+                  editable: true,
+                  onTokenTap: () {
+                    _showTokenSelector(
+                      context,
+                      isFromToken: true,
+                      currentToken: state.fromToken,
+                    );
+                  },
+                  onAmountChanged: (value) {
+                    context.read<SwapCubit>().updateFromAmount(value);
+                  },
+                  onMaxPressed: () {
+                    context.read<SwapCubit>().setMaxAmount();
+                  },
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(height: 1, color: Color(0xFF2F3031)),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          context.read<SwapCubit>().switchTokens();
+                        },
+                        child: Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Color(0xFF6F7174),
+                              width: 1,
+                            ),
+                            color: Colors.transparent,
+                          ),
+                          child: Transform.rotate(
+                            angle: 1.5708, // 90 度 = π/2 弧度
+                            child: SvgPicture.asset(
+                              'assets/switch.svg',
+                              width: 16,
+                              height: 16,
+                              fit: BoxFit.contain,
+                              colorFilter: const ColorFilter.mode(
+                                Color(0xFFDDE1E1),
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(height: 1, color: Color(0xFF2F3031)),
+                      ),
+                    ],
+                  ),
+                ),
+
+                TokenInputSection(
+                  label: 'To',
+                  tokenSymbol: state.toToken?.symbol,
+                  balance: state.toToken?.balance ?? 0.0,
+                  amount: state.toAmount,
+                  exchangeRate: state.exchangeRateText,
+                  editable: false,
+                  onTokenTap: () {
+                    _showTokenSelector(
+                      context,
+                      isFromToken: false,
+                      currentToken: state.toToken,
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
