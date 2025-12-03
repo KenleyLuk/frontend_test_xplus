@@ -17,32 +17,52 @@ class SwapCard extends StatelessWidget {
     required bool isFromToken,
     Token? currentToken,
   }) async {
-   
     final cubit = context.read<SwapCubit>();
+    final state = cubit.state;
 
     final dataSource = AssetsDataSourceImpl();
     final tokens = await dataSource.getTokens();
 
-    // 過濾當前已選擇的 token
+
     final availableTokens = tokens.where((token) {
-      return token.symbol != currentToken?.symbol;
+      // Filter 走 current token
+      if (token.symbol == currentToken?.symbol) {
+        return false;
+      }
+      
+      // 禁止 From Token 同 To Token 同一個
+      if (isFromToken && state.toToken != null) {
+        if (token.symbol == state.toToken!.symbol) {
+          return false;
+        }
+      }
+      
+      if (!isFromToken && state.fromToken != null) {
+        if (token.symbol == state.fromToken!.symbol) {
+          return false;
+        }
+      }
+      
+      return true;
     }).toList();
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (modalContext) => TokenSelectorModal(
-        tokens: availableTokens,
-        onTokenSelected: (token) {
-          // 使用保存的 cubit
-          if (isFromToken) {
-            cubit.selectFromToken(token);
-          } else {
-            cubit.selectToToken(token);
-          }
-        },
-      ),
+      isDismissible: true,
+      enableDrag: true,
+      builder:
+          (modalContext) => TokenSelectorModal(
+            tokens: availableTokens,
+            onTokenSelected: (token) {
+              if (isFromToken) {
+                cubit.selectFromToken(token);
+              } else {
+                cubit.selectToToken(token);
+              }
+            },
+          ),
     );
   }
 
@@ -94,8 +114,8 @@ class SwapCard extends StatelessWidget {
                           context.read<SwapCubit>().switchTokens();
                         },
                         child: Container(
-                          width: 24,
-                          height: 24,
+                          width: 32,
+                          height: 32,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
@@ -104,16 +124,18 @@ class SwapCard extends StatelessWidget {
                             ),
                             color: Colors.transparent,
                           ),
-                          child: Transform.rotate(
-                            angle: 1.5708, // 90 度 = π/2 弧度
-                            child: SvgPicture.asset(
-                              'assets/switch.svg',
-                              width: 16,
-                              height: 16,
-                              fit: BoxFit.contain,
-                              colorFilter: const ColorFilter.mode(
-                                Color(0xFFDDE1E1),
-                                BlendMode.srcIn,
+                          child: Center(
+                            child: Transform.rotate(
+                              angle: 1.5708, // 90 度 = π/2 弧度
+                              child: SvgPicture.asset(
+                                'assets/switch.svg',
+                                width: 16,
+                                height: 16,
+                                fit: BoxFit.contain,
+                                colorFilter: const ColorFilter.mode(
+                                  Color(0xFFDDE1E1),
+                                  BlendMode.srcIn,
+                                ),
                               ),
                             ),
                           ),

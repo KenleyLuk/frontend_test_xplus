@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import 'token_icon.dart';
 
-class TokenInputSection extends StatelessWidget {
+class TokenInputSection extends StatefulWidget {
   final String label;
   final String? tokenSymbol;
   final double balance;
@@ -30,6 +30,45 @@ class TokenInputSection extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<TokenInputSection> createState() => _TokenInputSectionState();
+}
+
+class _TokenInputSectionState extends State<TokenInputSection> {
+  late TextEditingController _amountController;
+  late FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    // amount係空，默認設置"0"
+    final initialValue = widget.amount.isEmpty ? '0' : widget.amount;
+    _amountController = TextEditingController(text: initialValue);
+    _focusNode = FocusNode();
+  }
+
+  @override
+  void didUpdateWidget(TokenInputSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.amount != oldWidget.amount) {
+      // 新的 amount係空，設置"0"
+      final newValue = widget.amount.isEmpty ? '0' : widget.amount;
+      _amountController.text = newValue;
+
+      // 將cursor 移到最右邊
+      _amountController.selection = TextSelection.collapsed(
+        offset: newValue.length,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _amountController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,7 +76,7 @@ class TokenInputSection extends StatelessWidget {
         Row(
           children: [
             Text(
-              label,
+              widget.label,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Color(0xFFDDE1E1),
@@ -45,9 +84,25 @@ class TokenInputSection extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            Text(
-              'Balance: ${CurrencyFormatter.formatBalance(balance)}',
-              style: const TextStyle(color: Color(0xFF494949), fontSize: 12),
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'Balance: ',
+                    style: const TextStyle(
+                      color: Color(0xFF6F7174), // 淺灰色
+                      fontSize: 12,
+                    ),
+                  ),
+                  TextSpan(
+                    text: CurrencyFormatter.formatBalance(widget.balance),
+                    style: const TextStyle(
+                      color: Color(0xFFDDE1E1), 
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -55,14 +110,14 @@ class TokenInputSection extends StatelessWidget {
         Row(
           children: [
             GestureDetector(
-              onTap: onTokenTap,
+              onTap: widget.onTokenTap,
               child: Row(
                 children: [
-                  TokenIcon(symbol: tokenSymbol, size: 24),
+                  TokenIcon(symbol: widget.tokenSymbol, size: 24),
                   const SizedBox(width: 8),
                   Text(
-                    tokenSymbol ?? '',
-                    style: TextStyle(
+                    widget.tokenSymbol ?? '',
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Color(0xFFDDE1E1),
                       fontSize: 18,
@@ -83,28 +138,47 @@ class TokenInputSection extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            if (editable)
+            if (widget.editable)
               Expanded(
-                child: TextField(
-                  controller: TextEditingController(text: amount)
-                    ..selection = TextSelection.collapsed(offset: amount.length),
-                  onChanged: onAmountChanged,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFFDDE1E1),
-                    fontSize: 24,
-                  ),
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: '0',
-                    hintStyle: const TextStyle(color: Color(0xFF494949)),
+                child: GestureDetector(
+                  onTap: () {
+                    _focusNode.requestFocus();
+                  },
+                  child: TextField(
+                    controller: _amountController,
+                    focusNode: _focusNode,
+                    onChanged: (value) {
+                      widget.onAmountChanged?.call(value);
+                      // 確保cursor係最右邊
+                      _amountController.selection = TextSelection.collapsed(
+                        offset: value.length,
+                      );
+                    },
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    textAlign: TextAlign.right, 
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFDDE1E1),
+                      fontSize: 24, 
+                    ),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      hintText: '0',
+                      hintStyle: TextStyle(
+                        color: Color(0xFF494949),
+                        fontSize: 24,
+                      ),
+                      contentPadding: EdgeInsets.zero,
+                      isDense: true,
+                    ),
                   ),
                 ),
               )
             else
               Text(
-                amount.isEmpty ? '0' : amount,
+                widget.amount.isEmpty ? '0' : widget.amount,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Color(0xFFDDE1E1),
@@ -117,11 +191,11 @@ class TokenInputSection extends StatelessWidget {
         Row(
           children: [
             const Spacer(),
-            if (showMaxButton)
+            if (widget.showMaxButton)
               Padding(
                 padding: const EdgeInsets.only(left: 8),
                 child: GestureDetector(
-                  onTap: onMaxPressed,
+                  onTap: widget.onMaxPressed,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 12,
@@ -139,16 +213,16 @@ class TokenInputSection extends StatelessWidget {
                       'MAX',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFFBFFC59),
+                        color: Color(0xFFBFFC59), 
                         fontSize: 12,
                       ),
                     ),
                   ),
                 ),
               ),
-            if (!editable && exchangeRate != null && exchangeRate!.isNotEmpty)
+            if (!widget.editable && widget.exchangeRate != null && widget.exchangeRate!.isNotEmpty)
               Text(
-                exchangeRate!,
+                widget.exchangeRate!,
                 style: const TextStyle(color: Color(0xFF494949), fontSize: 12),
               ),
           ],

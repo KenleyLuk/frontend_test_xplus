@@ -89,29 +89,46 @@ class BottomNavBar extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SvgPicture.asset(
-              isSelected ? highlightedIconPath : iconPath,
-              width: 24,
-              height: 24,
-              colorFilter: isSelected
-                  ? const ColorFilter.mode(
-                      AppColors.primaryGreen,
-                      BlendMode.srcIn,
-                    )
-                  : const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
-                    ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                color: isSelected ? AppColors.primaryGreen : Colors.white,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+            // 選中時用綠色正方形包住 highlighted SVG
+            if (isSelected)
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: Color(0xFFBFFC59),
+                  borderRadius: BorderRadius.circular(6), 
+                ),
+                child: Center(
+                  child: SvgPicture.asset(
+                    highlightedIconPath,
+                    width: 24,
+                    height: 24,
+                    colorFilter: null,
+                  ),
+                ),
+              )
+            else
+              SvgPicture.asset(
+                iconPath,
+                width: 24,
+                height: 24,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
               ),
-            ),
+            // 選中隱藏文字, 只顯示綠色正方形 ＋ icon
+            if (!isSelected) ...[
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.white,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ],
           ],
         ),
       ),
