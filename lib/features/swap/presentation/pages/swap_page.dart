@@ -25,12 +25,46 @@ class _SwapPageState extends State<SwapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white,),
-          onPressed: () => {},
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+          behavior: HitTestBehavior.opaque,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
+                  size: 20,
+                ),
+                const SizedBox(width: 4),
+                const Text(
+                  'Back',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-        title: const Text('Swap', style: TextStyle(color: Color(0xFFDDE1E1)),),
+        leadingWidth: 100,
+        title: const Text(
+          'Swap',
+          style: TextStyle(
+            color: Colors.white, 
+            fontSize: 24, 
+            fontFamily: 'Baijam',
+            fontWeight: FontWeight.bold, 
+          ),
+        ),
         centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
       body: BlocProvider(
         create: (context) => SwapCubit(
