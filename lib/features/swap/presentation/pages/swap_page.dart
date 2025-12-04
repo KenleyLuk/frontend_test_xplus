@@ -23,45 +23,37 @@ class _SwapPageState extends State<SwapPage> {
   
   @override
   Widget build(BuildContext context) {
+    final isTablet = Responsive.isTablet(context);
+    
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
-          onTap: () {
-            Navigator.of(context).pop();
-          },
+          onTap: () {},
           behavior: HitTestBehavior.opaque,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
+                Icon(
                   Icons.arrow_back,
                   color: Colors.white,
-                  size: 20,
+                  size: Responsive.isTablet(context) ? 32 : 20,
                 ),
                 const SizedBox(width: 4),
-                const Text(
+                Text(
                   'Back',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: Responsive.isTablet(context) ? 24 : 16,
                   ),
                 ),
               ],
             ),
           ),
         ),
-        leadingWidth: 100,
-        title: const Text(
-          'Swap',
-          style: TextStyle(
-            color: Colors.white, 
-            fontSize: 24, 
-            fontFamily: 'Baijam',
-            fontWeight: FontWeight.bold, 
-          ),
-        ),
+        leadingWidth: 120,
+        title: const SizedBox.shrink(), // 移除 AppBar 中的 title
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -90,18 +82,41 @@ class SwapPageContent extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+    final isTablet = Responsive.isTablet(context);
+    
     return SingleChildScrollView(
-      padding: EdgeInsets.all(Responsive.getPadding(context)),
-      child: Column(
-        children: [
-          const SwapCard(),
-          const SizedBox(height: 24),
-          const FeeSection(),
-          const SizedBox(height: 16),
-          const DisclaimerText(),
-          const SizedBox(height: 24),
-          const PreviewButton(),
-        ],
+      padding: EdgeInsets.symmetric(
+        horizontal: Responsive.getHorizontalPadding(context),
+        vertical: Responsive.getPadding(context),
+      ),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: Responsive.getMaxContentWidth(context),
+          ),
+          child: Column(
+            children: [
+              // Swap title 在 SwapCard 上方
+              Text(
+                'Swap',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: Responsive.getTitleFontSize(context),
+                  fontFamily: 'Baijam',
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: isTablet ? 32 : 24),
+              const SwapCard(),
+              SizedBox(height: isTablet ? 40 : 24),
+              const FeeSection(),
+              SizedBox(height: isTablet ? 32 : 16),
+              const DisclaimerText(),
+              SizedBox(height: isTablet ? 40 : 24),
+              const PreviewButton(),
+            ],
+          ),
+        ),
       ),
     );
   }

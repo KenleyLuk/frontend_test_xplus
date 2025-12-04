@@ -2,6 +2,48 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import 'token_icon.dart';
+import 'package:flutter/material.dart';
+import '../../../../core/utils/responsive.dart' as responsive;
+import '../../../../core/constants/breakpoint.dart';
+import '../../../../core/constants/spacing.dart';
+
+class Responsive {
+  static bool isMobile(BuildContext context) {
+    return MediaQuery.of(context).size.width <= Breakpoint.mobile;
+  }
+  
+  static bool isTablet(BuildContext context) {
+    return MediaQuery.of(context).size.width > Breakpoint.mobile;
+  }
+  
+  static double getPadding(BuildContext context) {
+    return isMobile(context) ? AppSpacing.md : 32.0;
+  }
+  
+  static double getCardPadding(BuildContext context) {
+    return isMobile(context) ? 20.0 : 40.0;
+  }
+  
+  // 平板電腦最大內容寬度 - 根據圖片調整為更寬
+  static double getMaxContentWidth(BuildContext context) {
+    return isTablet(context) ? 900.0 : double.infinity;
+  }
+  
+  // 平板電腦水平 padding - 更大的左右間距
+  static double getHorizontalPadding(BuildContext context) {
+    return isTablet(context) ? 80.0 : AppSpacing.md;
+  }
+  
+  // 平板電腦標題字體大小
+  static double getTitleFontSize(BuildContext context) {
+    return isTablet(context) ? 32.0 : 24.0;
+  }
+  
+  // 平板電腦標籤字體大小
+  static double getLabelFontSize(BuildContext context) {
+    return isTablet(context) ? 28.0 : 24.0;
+  }
+}
 
 class TokenInputSection extends StatefulWidget {
   final String label;
@@ -70,6 +112,8 @@ class _TokenInputSectionState extends State<TokenInputSection> {
 
   @override
   Widget build(BuildContext context) {
+    final isTablet = Responsive.isTablet(context);
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -77,10 +121,10 @@ class _TokenInputSectionState extends State<TokenInputSection> {
           children: [
             Text(
               widget.label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Color(0xFFDDE1E1),
-                fontSize: 24,
+                fontSize: Responsive.getLabelFontSize(context),
               ),
             ),
             const Spacer(),
@@ -89,16 +133,16 @@ class _TokenInputSectionState extends State<TokenInputSection> {
                 children: [
                   TextSpan(
                     text: 'Balance: ',
-                    style: const TextStyle(
-                      color: Color(0xFF6F7174), // 淺灰色
-                      fontSize: 12,
+                    style: TextStyle(
+                      color: Color(0xFF6F7174),
+                      fontSize: isTablet ? 18 : 12,
                     ),
                   ),
                   TextSpan(
                     text: CurrencyFormatter.formatBalance(widget.balance),
-                    style: const TextStyle(
-                      color: Color(0xFFDDE1E1), 
-                      fontSize: 12,
+                    style: TextStyle(
+                      color: Color(0xFF6F7174),
+                      fontSize: isTablet ? 18 : 12,
                     ),
                   ),
                 ],
@@ -113,21 +157,21 @@ class _TokenInputSectionState extends State<TokenInputSection> {
               onTap: widget.onTokenTap,
               child: Row(
                 children: [
-                  TokenIcon(symbol: widget.tokenSymbol, size: 24),
-                  const SizedBox(width: 8),
+                  TokenIcon(symbol: widget.tokenSymbol, size: isTablet ? 32 : 24),
+                  SizedBox(width: isTablet ? 12 : 8),
                   Text(
                     widget.tokenSymbol ?? '',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Color(0xFFDDE1E1),
-                      fontSize: 18,
+                      fontSize: isTablet ? 22 : 18,
                     ),
                   ),
                   const SizedBox(width: 4),
                   SvgPicture.asset(
                     'assets/dropdown.svg',
-                    width: 16,
-                    height: 16,
+                    width: isTablet ? 20 : 16,
+                    height: isTablet ? 20 : 16,
                     fit: BoxFit.contain,
                     colorFilter: const ColorFilter.mode(
                       Color(0xFFDDE1E1),
@@ -149,26 +193,25 @@ class _TokenInputSectionState extends State<TokenInputSection> {
                     focusNode: _focusNode,
                     onChanged: (value) {
                       widget.onAmountChanged?.call(value);
-                      // 確保cursor係最右邊
                       _amountController.selection = TextSelection.collapsed(
                         offset: value.length,
                       );
                     },
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    textAlign: TextAlign.right, 
-                    style: const TextStyle(
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Color(0xFFDDE1E1),
-                      fontSize: 24, 
+                      fontSize: isTablet ? 32 : 24,
                     ),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
                       hintText: '0',
                       hintStyle: TextStyle(
                         color: Color(0xFF494949),
-                        fontSize: 24,
+                        fontSize: isTablet ? 36 : 24,
                       ),
                       contentPadding: EdgeInsets.zero,
                       isDense: true,
@@ -179,10 +222,10 @@ class _TokenInputSectionState extends State<TokenInputSection> {
             else
               Text(
                 widget.amount.isEmpty ? '0' : widget.amount,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Color(0xFFDDE1E1),
-                  fontSize: 24,
+                  fontSize: isTablet ? 36 : 24,
                 ),
               ),
           ],
@@ -197,24 +240,24 @@ class _TokenInputSectionState extends State<TokenInputSection> {
                 child: GestureDetector(
                   onTap: widget.onMaxPressed,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isTablet ? 16 : 12,
+                      vertical: isTablet ? 8 : 6,
                     ),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(18),
+                      borderRadius: BorderRadius.circular(isTablet ? 20 : 18),
                       border: Border.all(
                         color: const Color(0xFFBFFC59),
                         width: 1,
                       ),
                       color: Colors.transparent,
                     ),
-                    child: const Text(
+                    child: Text(
                       'MAX',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFFBFFC59), 
-                        fontSize: 12,
+                        color: Color(0xFFBFFC59),
+                        fontSize: isTablet ? 18 : 12,
                       ),
                     ),
                   ),
@@ -223,7 +266,10 @@ class _TokenInputSectionState extends State<TokenInputSection> {
             if (!widget.editable && widget.exchangeRate != null && widget.exchangeRate!.isNotEmpty)
               Text(
                 widget.exchangeRate!,
-                style: const TextStyle(color: Color(0xFF494949), fontSize: 12),
+                style: TextStyle(
+                  color: Color(0xFF494949),
+                  fontSize: isTablet ? 18 : 12,
+                ),
               ),
           ],
         ),

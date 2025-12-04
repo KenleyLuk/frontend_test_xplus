@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/colors.dart';
+import '../../../../core/utils/responsive.dart';
 import '../cubit/swap_cubit.dart';
 import '../cubit/swap_state.dart';
 
@@ -67,12 +68,10 @@ class PreviewButton extends StatelessWidget {
       builder: (context, state) {
         final isIncorrectOrder = _shouldShowIncorrectOrder(state);
 
-        // 檢查 fromAmount 是否為 "0" 或空（因為默認是 "0"）
         final isZero = state.fromAmount.isEmpty || 
                        state.fromAmount == '0' || 
                        (double.tryParse(state.fromAmount) ?? 0) == 0;
         
-        // 根據是否為 0 來決定樣式
         final buttonText = isIncorrectOrder ? 'Incorrect Order' : 'Preview';
         final backgroundColor = isIncorrectOrder 
             ? const Color(0xFF242424) 
@@ -81,31 +80,40 @@ class PreviewButton extends StatelessWidget {
             ? const Color(0xFF000000) 
             : Colors.black;
         
-        return SizedBox(
-          width: double.infinity,
-          height: 56,
-          child: ElevatedButton(
-            onPressed: isEnabled && !isZero
-                ? () {}
-                : null,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: backgroundColor,
-              foregroundColor: textColor,
-              disabledBackgroundColor: isZero 
-                  ? const Color(0xFF242424) 
-                  : Colors.grey[800],
-              disabledForegroundColor: isZero 
-                  ? const Color(0xFF000000) 
-                  : AppColors.textSecondary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+        final maxWidth = Responsive.getButtonMaxWidth(context);
+        
+        return Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: maxWidth ?? double.infinity,
             ),
-            child: Text(
-              buttonText,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+            child: SizedBox(
+              width: double.infinity,
+              height: Responsive.getButtonHeight(context),
+              child: ElevatedButton(
+                onPressed: isEnabled && !isZero
+                    ? () {}
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: backgroundColor,
+                  foregroundColor: textColor,
+                  disabledBackgroundColor: isZero 
+                      ? const Color(0xFF242424) 
+                      : Colors.grey[800],
+                  disabledForegroundColor: isZero 
+                      ? const Color(0xFF000000) 
+                      : AppColors.textSecondary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  buttonText,
+                  style: TextStyle(
+                    fontSize: Responsive.getButtonFontSize(context),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
           ),

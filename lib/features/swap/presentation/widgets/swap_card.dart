@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/utils/responsive.dart';
+import '../../../../core/utils/responsive.dart' as responsive;
 import 'token_input_section.dart';
 import '../../data/datasources/assets_data_source.dart';
 import '../../domain/entities/token.dart';
@@ -52,6 +52,12 @@ class SwapCard extends StatelessWidget {
       backgroundColor: Colors.transparent,
       isDismissible: true,
       enableDrag: true,
+      constraints: responsive.Responsive.isTablet(context)
+          ? BoxConstraints(
+              maxWidth: double.infinity,
+              maxHeight: MediaQuery.of(context).size.height * 0.9,
+            )
+          : null,
       builder:
           (modalContext) => TokenSelectorModal(
             tokens: availableTokens,
@@ -70,14 +76,16 @@ class SwapCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<SwapCubit, SwapState>(
       builder: (context, state) {
+        final isTablet = responsive.Responsive.isTablet(context);
+        
         return Card(
           color: const Color(0xFF0F1011),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(isTablet ? 24 : 16),
             side: const BorderSide(color: Color(0xFF616363), width: 1),
           ),
           child: Padding(
-            padding: EdgeInsets.all(Responsive.getCardPadding(context)),
+            padding: EdgeInsets.all(responsive.Responsive.getCardPadding(context)),
             child: Column(
               children: [
                 TokenInputSection(
@@ -114,8 +122,8 @@ class SwapCard extends StatelessWidget {
                           context.read<SwapCubit>().switchTokens();
                         },
                         child: Container(
-                          width: 32,
-                          height: 32,
+                          width: Responsive.isTablet(context) ? 48 : 32,
+                          height: Responsive.isTablet(context) ? 48 : 32,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
@@ -129,8 +137,8 @@ class SwapCard extends StatelessWidget {
                               angle: 1.5708, // 90 度 = π/2 弧度
                               child: SvgPicture.asset(
                                 'assets/switch.svg',
-                                width: 16,
-                                height: 16,
+                                width: Responsive.isTablet(context) ? 24 : 16,
+                                height: Responsive.isTablet(context) ? 24 : 16,
                                 fit: BoxFit.contain,
                                 colorFilter: const ColorFilter.mode(
                                   Color(0xFFDDE1E1),
