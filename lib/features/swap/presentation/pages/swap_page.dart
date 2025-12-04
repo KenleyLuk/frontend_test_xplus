@@ -10,6 +10,7 @@ import '../widgets/preview_button.dart';
 import '../../domain/repositories/swap_repository.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../../data/datasources/assets_data_source.dart';
+import '../../../../core/constants/colors.dart';
 
 class SwapPage extends StatefulWidget {
   const SwapPage({Key? key}) : super(key: key);
@@ -44,8 +45,9 @@ class _SwapPageState extends State<SwapPage> {
                 Text(
                   'Back',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: AppColors.textPrimary,
                     fontSize: Responsive.isTablet(context) ? 24 : 16,
+                    fontFamily: 'Baijam',
                   ),
                 ),
               ],
@@ -96,7 +98,6 @@ class SwapPageContent extends StatelessWidget {
           ),
           child: Column(
             children: [
-              // Swap title 在 SwapCard 上方
               Text(
                 'Swap',
                 style: TextStyle(

@@ -112,6 +112,7 @@ class PreviewButton extends StatelessWidget {
                   style: TextStyle(
                     fontSize: Responsive.getButtonFontSize(context),
                     fontWeight: FontWeight.bold,
+                    fontFamily: 'Baijam',
                   ),
                 ),
               ),

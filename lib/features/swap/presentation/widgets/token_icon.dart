@@ -73,6 +73,7 @@ class TokenIcon extends StatelessWidget {
               color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: size * 0.5,
+              fontFamily: 'Baijam',
             ),
           ),
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/utils/responsive.dart';
+import '../../../../core/constants/colors.dart';
 
 class DisclaimerText extends StatelessWidget {
   const DisclaimerText({Key? key}) : super(key: key);
@@ -11,8 +12,9 @@ class DisclaimerText extends StatelessWidget {
       child: Text(
         '* Exchange rates may vary with market changes. Final amounts depend on current rates and are not guaranteed. Users accept the risk of rate fluctuations.' ,
         style: TextStyle(
-          color: Color(0xFF494949),
+          color: AppColors.textTertiary,
           fontSize: Responsive.isTablet(context) ? 24 : 12,
+          fontFamily: 'Baijam',
         ),
         textAlign: TextAlign.left,
       ),

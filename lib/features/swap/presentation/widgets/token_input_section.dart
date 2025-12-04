@@ -6,6 +6,92 @@ import 'package:flutter/material.dart';
 import '../../../../core/utils/responsive.dart' as responsive;
 import '../../../../core/constants/breakpoint.dart';
 import '../../../../core/constants/spacing.dart';
+import 'package:flutter/material.dart';
+import '../../../../core/constants/colors.dart';
+
+class AppTextStyles {
+  // 字體家族
+  static const String fontFamily = 'Baijam';
+  
+  // 標題樣式
+  static TextStyle title(BuildContext context, {Color? color}) {
+    return TextStyle(
+      fontFamily: fontFamily,
+      fontSize: 56.0, // 平板，移動端需要根據 context 調整
+      fontWeight: FontWeight.bold,
+      color: color ?? AppColors.textWhite,
+    );
+  }
+  
+  // 標籤樣式（粗體）
+  static TextStyle label(BuildContext context, {Color? color}) {
+    return TextStyle(
+      fontFamily: fontFamily,
+      fontWeight: FontWeight.bold,
+      color: color ?? AppColors.textPrimary,
+    );
+  }
+  
+  // 主要文字樣式（粗體）
+  static TextStyle bodyBold({Color? color, double? fontSize}) {
+    return TextStyle(
+      fontFamily: fontFamily,
+      fontWeight: FontWeight.bold,
+      color: color ?? AppColors.textPrimary,
+      fontSize: fontSize,
+    );
+  }
+  
+  // 主要文字樣式（中等）
+  static TextStyle bodyMedium({Color? color, double? fontSize}) {
+    return TextStyle(
+      fontFamily: fontFamily,
+      fontWeight: FontWeight.w500,
+      color: color ?? AppColors.textPrimary,
+      fontSize: fontSize,
+    );
+  }
+  
+  // 主要文字樣式（半粗體）
+  static TextStyle bodySemiBold({Color? color, double? fontSize}) {
+    return TextStyle(
+      fontFamily: fontFamily,
+      fontWeight: FontWeight.w600,
+      color: color ?? AppColors.textPrimary,
+      fontSize: fontSize,
+    );
+  }
+  
+  // 主要文字樣式（正常）
+  static TextStyle body({Color? color, double? fontSize}) {
+    return TextStyle(
+      fontFamily: fontFamily,
+      fontWeight: FontWeight.normal,
+      color: color ?? AppColors.textPrimary,
+      fontSize: fontSize,
+    );
+  }
+  
+  // 次要文字樣式
+  static TextStyle secondary({Color? color, double? fontSize}) {
+    return TextStyle(
+      fontFamily: fontFamily,
+      fontWeight: FontWeight.normal,
+      color: color ?? AppColors.textSecondary,
+      fontSize: fontSize,
+    );
+  }
+  
+  // 第三級文字樣式
+  static TextStyle tertiary({Color? color, double? fontSize}) {
+    return TextStyle(
+      fontFamily: fontFamily,
+      fontWeight: FontWeight.normal,
+      color: color ?? AppColors.textTertiary,
+      fontSize: fontSize,
+    );
+  }
+}
 
 class Responsive {
   static bool isMobile(BuildContext context) {
@@ -125,6 +211,7 @@ class _TokenInputSectionState extends State<TokenInputSection> {
                 fontWeight: FontWeight.bold,
                 color: Color(0xFFDDE1E1),
                 fontSize: Responsive.getLabelFontSize(context),
+                fontFamily: 'Baijam',
               ),
             ),
             const Spacer(),
@@ -136,6 +223,7 @@ class _TokenInputSectionState extends State<TokenInputSection> {
                     style: TextStyle(
                       color: Color(0xFF6F7174),
                       fontSize: isTablet ? 18 : 12,
+                      fontFamily: 'Baijam',
                     ),
                   ),
                   TextSpan(
@@ -143,6 +231,7 @@ class _TokenInputSectionState extends State<TokenInputSection> {
                     style: TextStyle(
                       color: Color(0xFF6F7174),
                       fontSize: isTablet ? 18 : 12,
+                      fontFamily: 'Baijam',
                     ),
                   ),
                 ],
@@ -165,6 +254,7 @@ class _TokenInputSectionState extends State<TokenInputSection> {
                       fontWeight: FontWeight.bold,
                       color: Color(0xFFDDE1E1),
                       fontSize: isTablet ? 22 : 18,
+                      fontFamily: 'Baijam',
                     ),
                   ),
                   const SizedBox(width: 4),
@@ -203,6 +293,7 @@ class _TokenInputSectionState extends State<TokenInputSection> {
                       fontWeight: FontWeight.bold,
                       color: Color(0xFFDDE1E1),
                       fontSize: isTablet ? 32 : 24,
+                      fontFamily: 'Baijam',
                     ),
                     decoration: InputDecoration(
                       border: InputBorder.none,
@@ -212,6 +303,7 @@ class _TokenInputSectionState extends State<TokenInputSection> {
                       hintStyle: TextStyle(
                         color: Color(0xFF494949),
                         fontSize: isTablet ? 36 : 24,
+                        fontFamily: 'Baijam',
                       ),
                       contentPadding: EdgeInsets.zero,
                       isDense: true,
@@ -226,6 +318,7 @@ class _TokenInputSectionState extends State<TokenInputSection> {
                   fontWeight: FontWeight.bold,
                   color: Color(0xFFDDE1E1),
                   fontSize: isTablet ? 36 : 24,
+                  fontFamily: 'Baijam',
                 ),
               ),
           ],
@@ -241,11 +334,11 @@ class _TokenInputSectionState extends State<TokenInputSection> {
                   onTap: widget.onMaxPressed,
                   child: Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: isTablet ? 16 : 12,
-                      vertical: isTablet ? 8 : 6,
+                      horizontal: isTablet ? 16 : 8,
+                      vertical: isTablet ? 8 : 2,
                     ),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(isTablet ? 20 : 18),
+                      borderRadius: BorderRadius.circular(isTablet ? 20 : 10),
                       border: Border.all(
                         color: const Color(0xFFBFFC59),
                         width: 1,
@@ -258,6 +351,7 @@ class _TokenInputSectionState extends State<TokenInputSection> {
                         fontWeight: FontWeight.bold,
                         color: Color(0xFFBFFC59),
                         fontSize: isTablet ? 18 : 12,
+                        fontFamily: 'Baijam',
                       ),
                     ),
                   ),
@@ -269,6 +363,7 @@ class _TokenInputSectionState extends State<TokenInputSection> {
                 style: TextStyle(
                   color: Color(0xFF494949),
                   fontSize: isTablet ? 18 : 12,
+                  fontFamily: 'Baijam',
                 ),
               ),
           ],

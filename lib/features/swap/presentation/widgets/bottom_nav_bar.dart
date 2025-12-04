@@ -126,6 +126,7 @@ class BottomNavBar extends StatelessWidget {
                   fontSize: 12,
                   color: Colors.white,
                   fontWeight: FontWeight.normal,
+                  fontFamily: 'Baijam',
                 ),
               ),
             ],

@@ -72,6 +72,7 @@ class TokenSelectorModal extends StatelessWidget {
                               color: Color(0xFFDDE1E1),
                               fontSize: isTablet ? 48 : 24,
                               fontWeight: FontWeight.bold,
+                              fontFamily: 'Baijam',
                             ),
                           ),
                         ),
