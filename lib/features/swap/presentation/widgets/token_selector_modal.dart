@@ -16,6 +16,7 @@ class TokenSelectorModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isTablet = Responsive.isTablet(context);
+    final screenWidth = MediaQuery.of(context).size.width;
     
     return Stack(
       children: [
@@ -34,7 +35,7 @@ class TokenSelectorModal extends StatelessWidget {
         Align(
           alignment: Alignment.bottomCenter,
           child: SizedBox(
-            width: isTablet ? double.infinity : null, // 平板電腦全寬
+            width: isTablet ? screenWidth : null,
             child: DraggableScrollableSheet(
               initialChildSize: isTablet ? 0.7 : 0.65,
               minChildSize: isTablet ? 0.6 : 0.5,
@@ -43,6 +44,7 @@ class TokenSelectorModal extends StatelessWidget {
                 return GestureDetector(
                   onTap: () {},
                   child: Container(
+                    width: double.infinity,
                     decoration: BoxDecoration(
                       color: Color(0xFF1F1F1F),
                       borderRadius: BorderRadius.vertical(
@@ -52,9 +54,9 @@ class TokenSelectorModal extends StatelessWidget {
                     child: Column(
                       children: [
                         Container(
-                          margin: const EdgeInsets.symmetric(vertical: 12),
-                          width: 40,
-                          height: 4,
+                          margin: EdgeInsets.symmetric(vertical: isTablet ? 16 : 12),
+                          width: isTablet ? 60 : 40,
+                          height: isTablet ? 6 : 4,
                           decoration: BoxDecoration(
                             color: Colors.grey[400],
                             borderRadius: BorderRadius.circular(2),
@@ -62,18 +64,18 @@ class TokenSelectorModal extends StatelessWidget {
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
-                            horizontal: isTablet ? 32 : 20,
+                            horizontal: isTablet ? 48 : 20,
                           ),
                           child: Text(
                             'Select Token',
                             style: TextStyle(
                               color: Color(0xFFDDE1E1),
-                              fontSize: isTablet ? 32 : 24,
+                              fontSize: isTablet ? 48 : 24,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                        SizedBox(height: isTablet ? 24 : 16),
+                        SizedBox(height: isTablet ? 32 : 16),
                         Expanded(
                           child: ListView.builder(
                             controller: scrollController,
